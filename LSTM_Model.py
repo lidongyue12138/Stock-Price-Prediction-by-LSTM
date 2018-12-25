@@ -9,14 +9,15 @@ import tensorflow as tf
 class Model():
     """A class for an building and inferencing an lstm model"""
     
-    def __init__(self):
+    def __init__(self, name):
         self.model = keras.models.Sequential()
+        self.name = name
 
     def save_model(self):
-        self.model.save("my_model.h5")
+        self.model.save(self.name + ".h5")
 
     def load_model(self):
-        self.model = keras.models.load_model('my_model.h5')
+        self.model = keras.models.load_model(self.name + ".h5")
         self.model.summary()
 
     def build_model(self):
@@ -102,28 +103,6 @@ class Model():
         
         print('[Model] Training Completed. Model saved as %s' % save_fname)
 
-
-    def predict_point_by_point(self, data):
-        #Predict each timestep given the last sequence of true data, in effect only predicting 1 step ahead each time
-        print('[Model] Predicting Point-by-Point...')
-        predicted = self.model.predict(data)
-        predicted = np.reshape(predicted, (predicted.size,))
-        return predicted
-
-    def predict_sequence_full(self, data, window_size):
-        #Shift the window by 1 new prediction each time, re-run predictions on new window
-        print('[Model] Predicting Sequences Full...')
-        # curr_frame = data[-1]
-        predicted = []
-        for testData in data:
-            tmpPredicted = []
-            curr_frame = testData[:]
-            for i in range(20):
-                tmpPredicted.append(self.model.predict(curr_frame[newaxis,:,:])[0,0])
-                curr_frame = curr_frame[1:]
-                curr_frame = np.insert(curr_frame, [window_size-2], tmpPredicted[-1], axis=0)
-            predicted.append(sum(tmpPredicted)/20)
-        return predicted
 
     def predict_data(self, data):
         predicted = self.model.predict(data)

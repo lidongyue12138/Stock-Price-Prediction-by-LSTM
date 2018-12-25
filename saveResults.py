@@ -21,7 +21,7 @@ for i in range(int(len(data_test)/10)):
     for j in range(10):
         tmpData.append(data_test[count])
         count += 1
-    predictions[i] = (predictions[i] + 1) * tmpData[0][0]
+    predictions[i] = (predictions[i]/100 + 1) * tmpData[0][0]
 
 np.savetxt("results.txt", predictions[142:])
 
